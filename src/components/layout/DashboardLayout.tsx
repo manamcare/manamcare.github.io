@@ -2,10 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 
 interface NavItem {
   label: string
@@ -17,19 +15,16 @@ interface DashboardLayoutProps {
   children: React.ReactNode
   navItems: NavItem[]
   portalName: string
-  userName?: string
+  accentColor?: string
 }
 
-export default function DashboardLayout({ children, navItems, portalName, userName }: DashboardLayoutProps) {
+export default function DashboardLayout({ children, navItems, portalName, accentColor = 'brand' }: DashboardLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  async function handleLogout() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
+  function handleLogout() {
     router.push('/login')
-    router.refresh()
   }
 
   return (
@@ -46,7 +41,7 @@ export default function DashboardLayout({ children, navItems, portalName, userNa
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {navItems.map(item => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+            const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href + '/'))
             return (
               <Link
                 key={item.href}
@@ -62,27 +57,26 @@ export default function DashboardLayout({ children, navItems, portalName, userNa
         </nav>
 
         <div className="p-4 border-t border-gray-100">
-          {userName && <div className="text-sm font-medium text-gray-700 mb-3 px-4">{userName}</div>}
           <button onClick={handleLogout} className="sidebar-link w-full text-red-600 hover:bg-red-50 hover:text-red-700">
             <span>🚪</span> Sign Out
           </button>
         </div>
       </aside>
 
-      {/* Overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* Main */}
       <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
-        <header className="sticky top-0 z-30 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between lg:justify-end">
+        <header className="sticky top-0 z-30 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
           <button className="lg:hidden p-2 rounded-lg hover:bg-gray-100" onClick={() => setSidebarOpen(true)}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          {userName && <div className="text-sm text-gray-600 hidden lg:block">Hello, <span className="font-medium">{userName}</span></div>}
+          <div className="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded-full hidden lg:block">
+            Demo Mode — connect Supabase to go live
+          </div>
         </header>
 
         <main className="flex-1 p-6">{children}</main>

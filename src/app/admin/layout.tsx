@@ -1,5 +1,4 @@
 import DashboardLayout from '@/components/layout/DashboardLayout'
-import { createClient } from '@/lib/supabase/server'
 
 const NAV_ITEMS = [
   { label: 'Overview', href: '/admin', icon: '📊' },
@@ -14,13 +13,9 @@ const NAV_ITEMS = [
   { label: 'Reports', href: '/admin/reports', icon: '📈' },
 ]
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', user?.id).single()
-
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <DashboardLayout navItems={NAV_ITEMS} portalName="Admin Dashboard" userName={profile?.full_name}>
+    <DashboardLayout navItems={NAV_ITEMS} portalName="Admin Dashboard">
       {children}
     </DashboardLayout>
   )

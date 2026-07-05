@@ -1,46 +1,33 @@
+'use client'
+
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
-import { formatDate } from '@/lib/utils'
 
-export default async function CaretakerDashboard() {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+const TODAY_VISITS = [
+  { id: '1', elder: 'Subba Rao Garu', address: 'Door 12, Gandhi Nagar, Vijayawada', time: '9:00 AM', status: 'completed' },
+  { id: '2', elder: 'Rama Devi', address: 'Plot 45, Autonagar, Vijayawada', time: '2:30 PM', status: 'scheduled' },
+]
 
-  const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', user?.id).single()
-  const { data: plans } = await supabase
-    .from('service_plans')
-    .select('*, parent_profiles(name, city, age)')
-    .eq('caretaker_id', user?.id)
-    .eq('status', 'active')
+const ASSIGNMENTS = [
+  { id: '1', name: 'Subba Rao Garu', city: 'Vijayawada', age: 74, services: 6, parentId: '1' },
+  { id: '2', name: 'Rama Devi', city: 'Vijayawada', age: 69, services: 4, parentId: '2' },
+  { id: '3', name: 'Venkatesh Rao', city: 'Guntur', age: 78, services: 8, parentId: '3' },
+]
 
-  const { data: todayVisits } = await supabase
-    .from('visits')
-    .select('*, parent_profiles(name)')
-    .eq('caretaker_id', user?.id)
-    .gte('scheduled_at', new Date().toISOString().split('T')[0])
-    .lte('scheduled_at', new Date().toISOString().split('T')[0] + 'T23:59:59')
-    .order('scheduled_at')
-
-  const { data: pendingPlans } = await supabase
-    .from('service_plans')
-    .select('*, parent_profiles(name, city)')
-    .eq('status', 'pending')
-    .is('caretaker_id', null)
-
+export default function CaretakerDashboard() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Hello, {profile?.full_name ?? 'Caretaker'}</h1>
-        <p className="text-gray-500 text-sm mt-1">Here&apos;s your care overview for today</p>
+        <h1 className="text-2xl font-bold text-gray-900">Hello, Lakshmi Devi</h1>
+        <p className="text-gray-500 text-sm mt-1">Your care overview for today — Jul 5, 2026</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Active Assignments', value: plans?.length ?? 0, icon: '👴', color: 'text-brand-600' },
-          { label: 'Visits Today', value: todayVisits?.length ?? 0, icon: '📅', color: 'text-blue-600' },
-          { label: 'Completed Today', value: todayVisits?.filter(v => v.status === 'completed').length ?? 0, icon: '✅', color: 'text-green-600' },
-          { label: 'New Requests', value: pendingPlans?.length ?? 0, icon: '🔔', color: 'text-orange-600' },
+          { label: 'Active Assignments', value: '3', icon: '👴', color: 'text-brand-600' },
+          { label: 'Visits Today', value: '2', icon: '📅', color: 'text-blue-600' },
+          { label: 'Completed Today', value: '1', icon: '✅', color: 'text-green-600' },
+          { label: 'New Requests', value: '1', icon: '🔔', color: 'text-orange-600' },
         ].map(stat => (
           <div key={stat.label} className="card">
             <div className="text-xl mb-1">{stat.icon}</div>
@@ -56,73 +43,55 @@ export default async function CaretakerDashboard() {
           <h2 className="font-semibold text-gray-900">Today&apos;s Visits</h2>
           <Link href="/caretaker/visits" className="text-sm text-brand-600 hover:underline">View All</Link>
         </div>
-        {todayVisits && todayVisits.length > 0 ? (
-          <div className="space-y-3">
-            {todayVisits.map(visit => (
-              <div key={visit.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <div className="font-medium text-gray-900 text-sm">{visit.parent_profiles?.name ?? 'Elder'}</div>
-                  <div className="text-xs text-gray-500">{formatDate(visit.scheduled_at)}</div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className={`badge ${
-                    visit.status === 'completed' ? 'bg-green-100 text-green-800' :
-                    visit.status === 'in_progress' ? 'bg-orange-100 text-orange-800' :
-                    'bg-blue-100 text-blue-800'
-                  }`}>
-                    {visit.status.replace('_', ' ')}
-                  </span>
-                  <Link href={`/caretaker/visits/${visit.id}`} className="text-xs text-brand-600 hover:underline">
-                    {visit.status === 'scheduled' ? 'Check In' : 'View'}
-                  </Link>
-                </div>
+        <div className="space-y-3">
+          {TODAY_VISITS.map(visit => (
+            <div key={visit.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div>
+                <div className="font-medium text-gray-900 text-sm">{visit.elder}</div>
+                <div className="text-xs text-gray-500">{visit.address}</div>
+                <div className="text-xs text-gray-400">{visit.time}</div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm text-gray-500 py-4 text-center">No visits scheduled for today</p>
-        )}
+              <div className="flex items-center gap-3">
+                <span className={`badge ${
+                  visit.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+                }`}>{visit.status}</span>
+                {visit.status === 'scheduled' && (
+                  <button className="btn-primary text-xs py-1.5 px-3">Check In</button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* New plan requests */}
-      {pendingPlans && pendingPlans.length > 0 && (
-        <div className="card border-2 border-orange-200 bg-orange-50">
-          <h2 className="font-semibold text-gray-900 mb-3">🔔 New Care Plan Requests</h2>
-          <div className="space-y-3">
-            {pendingPlans.slice(0, 3).map(plan => (
-              <div key={plan.id} className="bg-white p-4 rounded-lg flex items-center justify-between">
-                <div>
-                  <div className="font-medium text-gray-900 text-sm">{plan.parent_profiles?.name ?? 'Elder'}</div>
-                  <div className="text-xs text-gray-500">{plan.parent_profiles?.city} · ₹{plan.monthly_cost?.toLocaleString('en-IN')}/mo</div>
-                </div>
-                <Link href={`/caretaker/assignments/${plan.id}`} className="btn-primary text-xs py-1.5 px-3">
-                  Review
-                </Link>
-              </div>
-            ))}
+      {/* New request */}
+      <div className="card border-2 border-orange-200 bg-orange-50">
+        <h2 className="font-semibold text-gray-900 mb-3">🔔 New Care Plan Request</h2>
+        <div className="bg-white p-4 rounded-lg flex items-center justify-between">
+          <div>
+            <div className="font-medium text-gray-900 text-sm">Seetharama Garu</div>
+            <div className="text-xs text-gray-500">Guntur · ₹6,500/mo · 7 services</div>
           </div>
+          <Link href="/caretaker/assignments" className="btn-primary text-xs py-1.5 px-3">Review</Link>
         </div>
-      )}
+      </div>
 
-      {/* Active assignments summary */}
+      {/* Active assignments */}
       <div className="card">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-gray-900">Active Assignments</h2>
           <Link href="/caretaker/assignments" className="text-sm text-brand-600 hover:underline">View All</Link>
         </div>
-        {plans && plans.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {plans.map(plan => (
-              <Link key={plan.id} href={`/caretaker/timeline/${plan.parent_id}`} className="p-4 bg-gray-50 hover:bg-brand-50 rounded-lg transition-colors border border-transparent hover:border-brand-200">
-                <div className="font-medium text-gray-900 text-sm">{plan.parent_profiles?.name}</div>
-                <div className="text-xs text-gray-500 mt-0.5">{plan.parent_profiles?.city} · Age {plan.parent_profiles?.age}</div>
-                <div className="text-xs text-brand-600 mt-1">View Timeline →</div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm text-gray-500 py-4 text-center">No active assignments yet</p>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {ASSIGNMENTS.map(a => (
+            <Link key={a.id} href="/caretaker/timeline" className="p-4 bg-gray-50 hover:bg-brand-50 rounded-lg transition-colors border border-transparent hover:border-brand-200">
+              <div className="font-medium text-gray-900 text-sm">{a.name}</div>
+              <div className="text-xs text-gray-500 mt-0.5">{a.city} · Age {a.age}</div>
+              <div className="text-xs text-gray-400 mt-0.5">{a.services} services</div>
+              <div className="text-xs text-brand-600 mt-2">View Timeline →</div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   )
