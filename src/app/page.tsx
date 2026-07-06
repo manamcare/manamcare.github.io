@@ -99,33 +99,88 @@ export default function LandingPage() {
 
       {/* Live update preview */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900">What You See Every Day</h2>
-            <p className="text-gray-500 mt-2">Open the app and see real-time updates from your parent's caretaker</p>
+            <p className="text-gray-500 mt-2">Open the app and see real-time updates from your parent&apos;s caretaker</p>
           </div>
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 max-w-sm mx-auto">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="text-xs text-gray-500">Today's Updates</p>
-                <p className="font-semibold text-gray-900">Ramarao Garu, Vijayawada</p>
-              </div>
-              <span className="badge bg-green-100 text-green-800">All Good</span>
-            </div>
-            <div className="space-y-3">
-              {[
-                { icon: '✅', text: 'BP checked — 120/80 (Normal)', time: '9:15 AM' },
-                { icon: '💊', text: 'Morning medicines given', time: '9:20 AM' },
-                { icon: '🛒', text: 'Groceries delivered', time: '11:00 AM' },
-                { icon: '📸', text: '3 photos uploaded', time: '11:05 AM' },
-                { icon: '🩺', text: 'Doctor visit completed', time: '2:30 PM' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3 text-sm">
-                  <span className="text-base">{item.icon}</span>
-                  <span className="flex-1 text-gray-700">{item.text}</span>
-                  <span className="text-xs text-gray-400">{item.time}</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Card 1 — Health-focused day */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-xs text-gray-500">Today&apos;s Updates</p>
+                  <p className="font-semibold text-gray-900">Ramarao Garu, Vijayawada</p>
                 </div>
-              ))}
+                <span className="badge bg-green-100 text-green-800">All Good</span>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { icon: '✅', text: 'BP checked — 120/80 (Normal)', time: '9:15 AM' },
+                  { icon: '💊', text: 'Morning medicines given', time: '9:20 AM' },
+                  { icon: '🛒', text: 'Groceries delivered', time: '11:00 AM' },
+                  { icon: '📸', text: '3 photos uploaded', time: '11:05 AM' },
+                  { icon: '🩺', text: 'Doctor visit completed', time: '2:30 PM' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 text-sm">
+                    <span className="text-base">{item.icon}</span>
+                    <span className="flex-1 text-gray-700">{item.text}</span>
+                    <span className="text-xs text-gray-400">{item.time}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Card 2 — Hospital & errands day */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-xs text-gray-500">Today&apos;s Updates</p>
+                  <p className="font-semibold text-gray-900">Subbalakshmi Garu, Guntur</p>
+                </div>
+                <span className="badge bg-blue-100 text-blue-800">In Progress</span>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { icon: '🚗', text: 'Ride booked — Apollo Hospital', time: '8:30 AM' },
+                  { icon: '🏥', text: 'Arrived at hospital with escort', time: '9:10 AM' },
+                  { icon: '📋', text: 'Consultation done, reports collected', time: '11:30 AM' },
+                  { icon: '💊', text: 'Medicines purchased from pharmacy', time: '12:15 PM' },
+                  { icon: '🏠', text: 'Safely dropped home', time: '1:00 PM' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 text-sm">
+                    <span className="text-base">{item.icon}</span>
+                    <span className="flex-1 text-gray-700">{item.text}</span>
+                    <span className="text-xs text-gray-400">{item.time}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Card 3 — Festival & companion day */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-xs text-gray-500">Today&apos;s Updates</p>
+                  <p className="font-semibold text-gray-900">Venkateswara Rao, Nellore</p>
+                </div>
+                <span className="badge bg-purple-100 text-purple-800">Festive Day</span>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { icon: '🎉', text: 'Home decorated for Ugadi', time: '8:00 AM' },
+                  { icon: '🍱', text: 'Special sweets & food delivered', time: '10:00 AM' },
+                  { icon: '📹', text: 'Video call arranged with family in US', time: '11:00 AM' },
+                  { icon: '📸', text: '6 celebration photos uploaded', time: '11:30 AM' },
+                  { icon: '💌', text: 'Monthly health report sent to family', time: '6:00 PM' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 text-sm">
+                    <span className="text-base">{item.icon}</span>
+                    <span className="flex-1 text-gray-700">{item.text}</span>
+                    <span className="text-xs text-gray-400">{item.time}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
