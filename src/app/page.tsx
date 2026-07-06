@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { SERVICES } from '@/types'
+import Logo, { LogoIcon } from '@/components/Logo'
 
 const TIERS = [
   {
@@ -41,10 +42,9 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-brand-600">MANAM</span>
-              <span className="hidden sm:block text-xs text-gray-500 border-l border-gray-200 pl-2">Elder Care Platform</span>
-            </div>
+            <Link href="/" className="flex items-center">
+              <Logo size={36} showTagline />
+            </Link>
             <div className="flex items-center gap-3">
               <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                 Sign In
@@ -138,7 +138,7 @@ export default function LandingPage() {
                   <p className="text-xs text-gray-500">Today&apos;s Updates</p>
                   <p className="font-semibold text-gray-900">Subbalakshmi Garu, Guntur</p>
                 </div>
-                <span className="badge bg-blue-100 text-blue-800">In Progress</span>
+                <span className="badge bg-blue-100 text-blue-800">All good</span>
               </div>
               <div className="space-y-3">
                 {[
@@ -285,8 +285,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-              <div className="text-2xl font-bold text-white mb-1">MANAM</div>
-              <div className="text-sm">Elder Care & Family Support Platform</div>
+              <Logo size={40} darkBg showTagline />
             </div>
             <div className="flex gap-8 text-sm">
               <Link href="/login" className="hover:text-white transition-colors">Family Login</Link>

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import Logo from '@/components/Logo'
 
 interface NavItem {
   label: string
@@ -34,9 +35,11 @@ export default function DashboardLayout({ children, navItems, portalName, accent
         'fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100 flex flex-col transition-transform duration-300',
         sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       )}>
-        <div className="p-6 border-b border-gray-100">
-          <Link href="/" className="text-xl font-bold text-brand-600">MANAM</Link>
-          <div className="text-xs text-gray-500 mt-0.5">{portalName}</div>
+        <div className="p-5 border-b border-gray-100">
+          <Link href="/">
+            <Logo size={32} />
+          </Link>
+          <div className="text-xs text-gray-400 mt-2 pl-1">{portalName}</div>
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
